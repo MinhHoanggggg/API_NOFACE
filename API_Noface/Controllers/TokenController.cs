@@ -46,7 +46,7 @@ namespace API_Noface.Controllers
 
             var permClaims = new List<Claim>
             {
-                new Claim("Exp", DateTime.Now.AddSeconds(5).ToString()),
+                new Claim("Exp", DateTime.Now.AddDays(7).ToString()),
                 new Claim("idUser", idUser)
             };
 
