@@ -126,9 +126,7 @@ namespace API_Noface.Controllers
             }
 
             var newJwtToken = GenerateToken(idUser);
-            var newRefreshToken = GenerateRefeshToken(idUser);
-            SaveRefeshToken(idUser, newRefreshToken);
-            return Ok(new Token(newJwtToken, newRefreshToken));
+            return Ok(new Token(newJwtToken, refreshToken));
         }
 
         public void SaveRefeshToken(string idUser, string refeshToken)
