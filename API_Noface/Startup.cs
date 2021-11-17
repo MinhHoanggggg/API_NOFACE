@@ -29,6 +29,8 @@ namespace API_Noface
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("KeyBaoMatSieuCapVoDich"))
                     }
                 });
+
+
         }
     }
 }

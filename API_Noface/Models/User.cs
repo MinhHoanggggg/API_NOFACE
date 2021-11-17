@@ -27,6 +27,8 @@ namespace API_Noface.Models
 
         public int? IDAvt { get; set; }
 
+        public string RefeshToken { get; set; }
+
         public virtual Avt Avt { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

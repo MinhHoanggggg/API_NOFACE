@@ -9,9 +9,12 @@ namespace API_Noface.Models
     {
         public string data { get; set; }
 
-        public Token(string data)
+        public string RefreshToken { get; set; }
+
+        public Token(string data, string refreshToken)
         {
             this.data = data;
+            RefreshToken = refreshToken;
         }
     }
 }

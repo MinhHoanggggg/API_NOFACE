@@ -1,18 +1,15 @@
 ﻿using API_Noface.Models;
 using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 
 namespace API_Noface.Controllers
 {
     public class PostAPIController : ApiController
     {
-        private NofaceDbContext db = new NofaceDbContext();
+        private readonly NofaceDbContext db = new NofaceDbContext();
 
         //get all bài viết theo 1 chủ đề
         [Authorize]
@@ -21,6 +18,7 @@ namespace API_Noface.Controllers
         public IHttpActionResult GetAllPostById(int id)//para là id topic
         {
             var posts = db.Post.Where(p => p.IDTopic == id)
+                                            .OrderByDescending(p => p.Time)
                                             .Include(p => p.Likes)
                                             .Include(p => p.Comment)
                                             .Include(p => p.Topic)
@@ -40,6 +38,7 @@ namespace API_Noface.Controllers
         public IHttpActionResult GetPostById(int id)//para là id post
         {
             var posts = db.Post.Where(p => p.IDPost == id)
+                                            .OrderByDescending(p => p.Time)
                                             .Include(p => p.Likes)
                                             .Include(p => p.Comment)
                                             .FirstOrDefault();
@@ -78,7 +77,7 @@ namespace API_Noface.Controllers
         [Authorize]
         [HttpPost]
         [Route("like-post/{idpost}/{iduser}")]
-        public IHttpActionResult LikePost(int idpost, String iduser)
+        public IHttpActionResult LikePost(int idpost, string iduser)
         {
             try
             {
@@ -86,9 +85,11 @@ namespace API_Noface.Controllers
 
                 if (likedb == null)
                 {
-                    Likes like = new Likes();
-                    like.IDPost = idpost;
-                    like.IDUser = iduser;
+                    Likes like = new Likes
+                    {
+                        IDPost = idpost,
+                        IDUser = iduser
+                    };
                     db.Likes.Add(like);
                 }
                 else
@@ -150,7 +151,7 @@ namespace API_Noface.Controllers
         [Route("post-trending")]
         public IHttpActionResult PostTrending()
         {
-            var posts = db.Post.OrderByDescending(p => p.Likes.Count)
+            var posts = db.Post.OrderByDescending(p => p.Likes.Count + p.Comment.Count)
                                .Include(p => p.Likes)
                                .Include(p => p.Comment)
                                .ToList()
@@ -169,7 +170,7 @@ namespace API_Noface.Controllers
         [Route("get-all-cmt-by-id/{id}")]
         public IHttpActionResult GetAllCmt(int id)//para là id post
         {
-            var cmt = db.Comment.Where(c => c.IDPost == id).ToList();
+            var cmt = db.Comment.Where(c => c.IDPost == id).OrderBy(c => c.Time).ToList();
 
             if (cmt == null)
             {
@@ -215,6 +216,23 @@ namespace API_Noface.Controllers
             {
                 return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, hãy thử lại!"));
             }
+        }
+
+        [Authorize]
+        [HttpGet]
+        [Route("new-post")]
+        public IHttpActionResult NewPost()
+        {
+            var posts = db.Post.OrderByDescending(p => p.Time)
+                               .Include(p => p.Likes)
+                               .Include(p => p.Comment)
+                               .ToList();
+
+            if (posts == null)
+            {
+                return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, hãy thử lại!"));
+            }
+            return Ok(posts);
         }
     }
 }
