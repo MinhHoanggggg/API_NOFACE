@@ -46,6 +46,8 @@ namespace API_Noface.Controllers
 
             var permClaims = new List<Claim>
             {
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToString()),
                 new Claim("Exp", DateTime.Now.AddDays(7).ToString()),
                 new Claim("idUser", idUser)
             };
@@ -53,7 +55,7 @@ namespace API_Noface.Controllers
             var token = new JwtSecurityToken(issuer,
                                 issuer,
                                 permClaims,
-                                expires: DateTime.Now.AddSeconds(5),
+                                expires: DateTime.Now.AddDays(7),
                                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
@@ -61,27 +63,28 @@ namespace API_Noface.Controllers
 
         public ClaimsPrincipal GetPrincipalFromExpiredToken(string refeshToken)
         {
-            try
-            {
-                var tokenValidationParameters = new TokenValidationParameters
+            //try
+            //{
+                string key = "KeyBaoMatSieuCapVoDich";
+                var keysecret = Encoding.ASCII.GetBytes(key);
+                var handler = new JwtSecurityTokenHandler();
+
+                var validations = new TokenValidationParameters
                 {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = "http://www.noface.somee.com",
-                    ValidAudience = "http://www.noface.somee.com",
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("KeyBaoMatSieuCapVoDich"))
+                    IssuerSigningKey = new SymmetricSecurityKey(keysecret),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = false
                 };
 
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var principal = tokenHandler.ValidateToken(refeshToken, tokenValidationParameters, out SecurityToken securityToken);
-
-                return principal;
-            }
-            catch
-            {
-                throw new SecurityTokenException("Hông phải user mà đòi lấy token");
-            }
+                var claims = handler.ValidateToken(refeshToken, validations, out var tokenSecure);
+                return claims;
+            //}
+            //catch
+            //{
+            //    throw new SecurityTokenException("Hông phải user mà đòi lấy token");
+            //}
         }
 
         [Route("get-token/{idUser}")]
@@ -98,7 +101,6 @@ namespace API_Noface.Controllers
                 return Ok(new Token(token, refreshToken));
             }
             else
-
             {
                 return BadRequest("Hông phải user mà đòi lấy token");
             }
@@ -106,14 +108,14 @@ namespace API_Noface.Controllers
 
         [Route("refresh-token")]
         [HttpPost]
-        public IHttpActionResult RefeshToken(string refreshToken)
+        public IHttpActionResult RefeshToken(Token token)
         {
-            var principal = GetPrincipalFromExpiredToken(refreshToken);
+            var principal = GetPrincipalFromExpiredToken(token.RefreshToken);
             string idUser = principal.Claims.Where(p => p.Type == "idUser").FirstOrDefault()?.Value;
 
             var saveRefreshToken = GetRefreshToken(idUser);
 
-            if (saveRefreshToken != refreshToken)
+            if (saveRefreshToken != token.RefreshToken)
             {
                 throw new SecurityTokenException("Hông phải user mà đòi lấy token");
             }
@@ -126,7 +128,7 @@ namespace API_Noface.Controllers
             }
 
             var newJwtToken = GenerateToken(idUser);
-            return Ok(new Token(newJwtToken, refreshToken));
+            return Ok(new Token(newJwtToken, token.RefreshToken));
         }
 
         public void SaveRefeshToken(string idUser, string refeshToken)
