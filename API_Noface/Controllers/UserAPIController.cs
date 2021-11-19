@@ -31,7 +31,6 @@ namespace API_Noface.Controllers
             return Ok(user);
         }
 
-
         //get post by id user
         [Authorize]
         [HttpGet]
@@ -104,6 +103,7 @@ namespace API_Noface.Controllers
         }
 
         //danh hiệu
+        [Authorize]
         [Route("Achievements/{iduser}")]
         [HttpGet]
         public IHttpActionResult Achievement(string iduser)
@@ -114,6 +114,7 @@ namespace API_Noface.Controllers
         }
 
         //post danh hiệu
+        [Authorize]
         [Route("Add-Achievements/{iduser}")]
         [HttpPost]
         public IHttpActionResult AddAchievement(string iduser)
