@@ -9,6 +9,12 @@ namespace API_Noface.Models
     [Table("Comment")]
     public partial class Comment
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Comment()
+        {
+            LikeComment = new HashSet<LikeComment>();
+        }
+
         [Key]
         public int IDCmt { get; set; }
 
@@ -26,5 +32,8 @@ namespace API_Noface.Models
         public virtual Post Post { get; set; }
 
         public virtual User User { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<LikeComment> LikeComment { get; set; }
     }
 }

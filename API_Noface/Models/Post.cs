@@ -34,6 +34,8 @@ namespace API_Noface.Models
 
         public string ImagePost { get; set; }
 
+        public int? Views { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Comment> Comment { get; set; }
 

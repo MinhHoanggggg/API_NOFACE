@@ -109,18 +109,11 @@ namespace API_Noface.Controllers
         [Authorize]
         [HttpGet]
         [Route("get-all-like-by-id/{id}")]
-        public IHttpActionResult GetAllLikeCmt(int id)//para là id post
+        public IHttpActionResult GetAllLike(int id)//para là id post
         {
             var likes = db.Likes.Where(l => l.IDPost == id).ToList();
-
-            if (likes == null)
-            {
-                return Ok(new Message(0, "Có like nào đâu mà get"));
-            }
-
             return Ok(likes);
         }
-
 
         //thêm or sửa 1 cmt
         [Authorize]
@@ -142,7 +135,7 @@ namespace API_Noface.Controllers
             {
                 return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, hãy thử lại!"));
             }
-            return Ok(new Message(1, "Bình luận hay quá đại vương!"));
+            return Ok(new Message(1, "Hảo bình luận!"));
         }
 
         //20 bài viết trending
@@ -170,13 +163,10 @@ namespace API_Noface.Controllers
         [Route("get-all-cmt-by-id/{id}")]
         public IHttpActionResult GetAllCmt(int id)//para là id post
         {
-            var cmt = db.Comment.Where(c => c.IDPost == id).OrderBy(c => c.Time).ToList();
-
-            if (cmt == null)
-            {
-                return Ok(new Message(0, "Có cmt nào đâu mà get"));
-            }
-
+            var cmt = db.Comment.Where(c => c.IDPost == id)
+                                .Include(c => c.LikeComment)
+                                .OrderBy(c => c.Time)
+                                .ToList();
             return Ok(cmt);
         }
 
@@ -205,6 +195,11 @@ namespace API_Noface.Controllers
 
                 foreach (Comment cmt in cmts)
                 {
+                    var likecmt = db.LikeComment.Where(l => l.IDCmt == cmt.IDCmt).ToList();
+                    foreach (LikeComment like in likecmt)
+                    {
+                        db.LikeComment.Remove(like);
+                    }
                     db.Comment.Remove(cmt);
                 }
 
@@ -233,6 +228,69 @@ namespace API_Noface.Controllers
                 return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, hãy thử lại!"));
             }
             return Ok(posts);
+        }
+
+        //like or unlike 1 comment
+        [Authorize]
+        [HttpPost]
+        [Route("like-cmt/{idcmt}/{iduser}")]
+        public IHttpActionResult LikeCmt(int idcmt, string iduser)
+        {
+            try
+            {
+                LikeComment likeCmtDb = db.LikeComment.FirstOrDefault(l => l.IDCmt == idcmt && l.IDUser.Equals(iduser) == true);
+
+                if (likeCmtDb == null)
+                {
+                    LikeComment likeCmt = new LikeComment
+                    {
+                        IDCmt = idcmt,
+                        IDUser = iduser
+                    };
+                    db.LikeComment.Add(likeCmt);
+                }
+                else
+                {
+                    db.LikeComment.Remove(likeCmtDb);
+                }
+                db.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, hãy thử lại!"));
+            }
+            return Ok(new Message(1, "cảm ơn bạn đã like <3"));
+        }
+
+        [Authorize]
+        [HttpDelete]
+        [Route("delete-cmt/{idcmt}")]
+        public IHttpActionResult DeleteCmt(int idcmt)//para là id cmt
+        {
+            try
+            {
+                var cmt = db.Comment.Where(p => p.IDCmt == idcmt).FirstOrDefault();
+
+                if (cmt == null)
+                {
+                    return Ok(new Message(0, "Không có cmt mà đòi xóa?"));
+                }
+
+                var likeCmt = db.LikeComment.Where(l => l.IDCmt == idcmt).ToList();
+
+                foreach (LikeComment like in likeCmt)
+                {
+                    db.LikeComment.Remove(like);
+                }
+
+                db.Comment.Remove(cmt);
+                db.SaveChanges();
+                return Ok(new Message(1, "Xóa bình luận thành công!"));
+            }
+            catch (Exception)
+            {
+                return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, hãy thử lại!"));
+            }
         }
     }
 }

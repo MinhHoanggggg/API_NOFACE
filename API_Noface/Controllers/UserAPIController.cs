@@ -71,5 +71,124 @@ namespace API_Noface.Controllers
             }
             return Ok(new Message(1, "Chúc mừng bạn đã đăng kí thành công"));
         }
+
+        //get achievements by id user
+        [Authorize]
+        [HttpGet]
+        [Route("achievements/{id}")]
+        public IHttpActionResult Achievements(string id)//para là id user
+        {
+            var achieve = db.Achievements.Where(p => p.IDUser.Equals(id)).ToList();
+            return Ok(achieve);
+        }
+
+
+        //xóa 1 user
+        [Route("delete-user/{iduser}")]
+        [HttpPost]
+        public IHttpActionResult DeleteUser(string iduser)
+        {
+            var user = db.User.Where(u => u.IDUser.Equals(iduser))
+                                               .Include(u => u.Post)
+                                               .FirstOrDefault();
+            try
+            {
+                db.User.Remove(user);
+                db.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return Ok(new Message(0, "xóa không thành công"));
+            }
+            return Ok(new Message(1, "Chúc mừng bạn đã xóa thành công"));
+        }
+
+        //danh hiệu
+        [Route("Achievements/{iduser}")]
+        [HttpGet]
+        public IHttpActionResult Achievement(string iduser)
+        {
+            var achie = db.Achievements.Where(a => a.IDUser.Equals(iduser) == true).ToList();
+
+            return Ok(achie);
+        }
+
+        //post danh hiệu
+        [Route("Add-Achievements/{iduser}")]
+        [HttpPost]
+        public IHttpActionResult AddAchievement(string iduser)
+        {
+
+            User user = db.User.FirstOrDefault(u => u.IDUser.Equals(iduser) == true);
+
+            if(user.Comment.Count > 9)
+            {
+                //cmt 
+                var ach = db.Achievements.Where(a => a.IDUser.Equals(iduser) == true && a.IDMedal == 4).FirstOrDefault();
+                if(ach == null)
+                {
+                    Achievements achievements = new Achievements
+                    {
+                        IDMedal = 4,
+                        IDUser = iduser
+                    };
+                    db.Achievements.Add(achievements);
+                    db.SaveChanges();
+                    return Ok(new Message(4, "Chúc mừng bạn đã nhận được 1 danh hiệu mới!"));
+                }
+            }
+
+            if(user.Likes.Count > 9)
+            {
+                //like
+                var ach = db.Achievements.Where(a => a.IDUser.Equals(iduser) == true && a.IDMedal == 3).FirstOrDefault();
+                if (ach == null)
+                {
+                    Achievements achievements = new Achievements
+                    {
+                        IDMedal = 3,
+                        IDUser = iduser
+                    };
+                    db.Achievements.Add(achievements);
+                    db.SaveChanges();
+                    return Ok(new Message(3, "Chúc mừng bạn đã nhận được 1 danh hiệu mới!"));
+                }
+            }
+
+            if(user.Post.Count > 9)
+            {
+                //post
+                var ach = db.Achievements.Where(a => a.IDUser.Equals(iduser) == true && a.IDMedal == 2).FirstOrDefault();
+                if (ach == null)
+                {
+                    Achievements achievements = new Achievements
+                    {
+                        IDMedal = 2,
+                        IDUser = iduser
+                    };
+                    db.Achievements.Add(achievements);
+                    db.SaveChanges();
+                    return Ok(new Message(2, "Chúc mừng bạn đã nhận được 1 danh hiệu mới!"));
+                }
+            }
+
+            if (user.Post.Count == 0)
+            {
+                //new user
+                var ach = db.Achievements.Where(a => a.IDUser.Equals(iduser) == true && a.IDMedal == 1).FirstOrDefault();
+                if (ach == null)
+                {
+                    Achievements achievements = new Achievements
+                    {
+                        IDMedal = 1,
+                        IDUser = iduser
+                    };
+                    db.Achievements.Add(achievements);
+                    db.SaveChanges();
+                    return Ok(new Message(1, "Chúc mừng bạn đã nhận được 1 danh hiệu mới!"));
+                }
+            }
+            return Ok(new Message(0, ""));
+        }
     }
 }

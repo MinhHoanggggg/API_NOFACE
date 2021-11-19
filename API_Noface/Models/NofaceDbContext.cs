@@ -13,11 +13,14 @@ namespace API_Noface.Models
             this.Configuration.LazyLoadingEnabled = false;
         }
 
+        public virtual DbSet<Achievements> Achievements { get; set; }
         public virtual DbSet<Admin> Admin { get; set; }
         public virtual DbSet<Avt> Avt { get; set; }
         public virtual DbSet<Comment> Comment { get; set; }
         public virtual DbSet<Friends> Friends { get; set; }
+        public virtual DbSet<LikeComment> LikeComment { get; set; }
         public virtual DbSet<Likes> Likes { get; set; }
+        public virtual DbSet<Medals> Medals { get; set; }
         public virtual DbSet<Post> Post { get; set; }
         public virtual DbSet<Topic> Topic { get; set; }
         public virtual DbSet<User> User { get; set; }
@@ -25,6 +28,10 @@ namespace API_Noface.Models
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Achievements>()
+                .Property(e => e.IDUser)
+                .IsFixedLength();
+
             modelBuilder.Entity<Avt>()
                 .Property(e => e.Url)
                 .IsUnicode(false);
@@ -41,8 +48,16 @@ namespace API_Noface.Models
                 .Property(e => e.IDFriends)
                 .IsFixedLength();
 
+            modelBuilder.Entity<LikeComment>()
+                .Property(e => e.IDUser)
+                .IsFixedLength();
+
             modelBuilder.Entity<Likes>()
                 .Property(e => e.IDUser)
+                .IsFixedLength();
+
+            modelBuilder.Entity<Medals>()
+                .Property(e => e.ImgMedal)
                 .IsFixedLength();
 
             modelBuilder.Entity<Post>()

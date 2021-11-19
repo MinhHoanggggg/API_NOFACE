@@ -63,9 +63,9 @@ namespace API_Noface.Controllers
 
         public ClaimsPrincipal GetPrincipalFromExpiredToken(string refeshToken)
         {
-            //try
-            //{
-                string key = "KeyBaoMatSieuCapVoDich";
+            try
+            {
+            string key = "KeyBaoMatSieuCapVoDich";
                 var keysecret = Encoding.ASCII.GetBytes(key);
                 var handler = new JwtSecurityTokenHandler();
 
@@ -80,11 +80,11 @@ namespace API_Noface.Controllers
 
                 var claims = handler.ValidateToken(refeshToken, validations, out var tokenSecure);
                 return claims;
-            //}
-            //catch
-            //{
-            //    throw new SecurityTokenException("Hông phải user mà đòi lấy token");
-            //}
+            }
+            catch
+            {
+                throw new SecurityTokenException("Hông phải user mà đòi lấy token");
+            }
         }
 
         [Route("get-token/{idUser}")]
