@@ -16,5 +16,6 @@ namespace API_Noface.Models
         public string data { get; set; }
 
         public string RefreshToken { get; set; }
+
     }
 }

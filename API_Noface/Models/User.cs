@@ -13,6 +13,7 @@ namespace API_Noface.Models
         public User()
         {
             Achievements = new HashSet<Achievements>();
+            Ban = new HashSet<Ban>();
             Comment = new HashSet<Comment>();
             Friends = new HashSet<Friends>();
             Friends1 = new HashSet<Friends>();
@@ -31,10 +32,17 @@ namespace API_Noface.Models
 
         public string RefeshToken { get; set; }
 
+        public int? Warning { get; set; }
+
+        public int? Activated { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Achievements> Achievements { get; set; }
 
         public virtual Avt Avt { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Ban> Ban { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Comment> Comment { get; set; }

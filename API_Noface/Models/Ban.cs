@@ -6,17 +6,18 @@ namespace API_Noface.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class Achievements
+    [Table("Ban")]
+    public partial class Ban
     {
         [Key]
-        public int ID_Achievements { get; set; }
+        public int IDBan { get; set; }
 
+        [Required]
         [StringLength(50)]
         public string IDUser { get; set; }
 
-        public int? IDMedal { get; set; }
-
-        public virtual Medals Medals { get; set; }
+        [Column(TypeName = "smalldatetime")]
+        public DateTime TimeBan { get; set; }
 
         public virtual User User { get; set; }
     }

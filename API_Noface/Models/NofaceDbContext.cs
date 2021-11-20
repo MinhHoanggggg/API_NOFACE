@@ -16,6 +16,7 @@ namespace API_Noface.Models
         public virtual DbSet<Achievements> Achievements { get; set; }
         public virtual DbSet<Admin> Admin { get; set; }
         public virtual DbSet<Avt> Avt { get; set; }
+        public virtual DbSet<Ban> Ban { get; set; }
         public virtual DbSet<Comment> Comment { get; set; }
         public virtual DbSet<Friends> Friends { get; set; }
         public virtual DbSet<LikeComment> LikeComment { get; set; }
@@ -35,6 +36,10 @@ namespace API_Noface.Models
             modelBuilder.Entity<Avt>()
                 .Property(e => e.Url)
                 .IsUnicode(false);
+
+            modelBuilder.Entity<Ban>()
+                .Property(e => e.IDUser)
+                .IsFixedLength();
 
             modelBuilder.Entity<Comment>()
                 .Property(e => e.IDUser)
@@ -85,6 +90,11 @@ namespace API_Noface.Models
             modelBuilder.Entity<User>()
                 .Property(e => e.IDUser)
                 .IsFixedLength();
+
+            modelBuilder.Entity<User>()
+                .HasMany(e => e.Ban)
+                .WithRequired(e => e.User)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<User>()
                 .HasMany(e => e.Comment)
