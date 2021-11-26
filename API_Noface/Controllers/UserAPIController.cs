@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -71,16 +72,6 @@ namespace API_Noface.Controllers
             return Ok(new Message(1, "Chúc mừng bạn đã đăng kí thành công"));
         }
 
-        //get achievements by id user
-        [Authorize]
-        [HttpGet]
-        [Route("achievements/{id}")]
-        public IHttpActionResult Achievements(string id)//para là id user
-        {
-            var achieve = db.Achievements.Where(p => p.IDUser.Equals(id)).ToList();
-            return Ok(achieve);
-        }
-
 
         //xóa 1 user
         [Route("delete-user/{iduser}")]
@@ -108,7 +99,8 @@ namespace API_Noface.Controllers
         [HttpGet]
         public IHttpActionResult Achievement(string iduser)
         {
-            var achie = db.Achievements.Where(a => a.IDUser.Equals(iduser) == true).ToList();
+            var achie = db.Achievements.Where(a => a.IDUser.Equals(iduser) == true)
+                          .Include(a => a.Medals).ToList();
 
             return Ok(achie);
         }
@@ -122,11 +114,11 @@ namespace API_Noface.Controllers
 
             User user = db.User.FirstOrDefault(u => u.IDUser.Equals(iduser) == true);
 
-            if(user.Comment.Count > 9)
+            if (user.Comment.Count > 9)
             {
                 //cmt 
                 var ach = db.Achievements.Where(a => a.IDUser.Equals(iduser) == true && a.IDMedal == 4).FirstOrDefault();
-                if(ach == null)
+                if (ach == null)
                 {
                     Achievements achievements = new Achievements
                     {
@@ -139,7 +131,7 @@ namespace API_Noface.Controllers
                 }
             }
 
-            if(user.Likes.Count > 9)
+            if (user.Likes.Count > 9)
             {
                 //like
                 var ach = db.Achievements.Where(a => a.IDUser.Equals(iduser) == true && a.IDMedal == 3).FirstOrDefault();
@@ -156,7 +148,7 @@ namespace API_Noface.Controllers
                 }
             }
 
-            if(user.Post.Count > 9)
+            if (user.Post.Count > 9)
             {
                 //post
                 var ach = db.Achievements.Where(a => a.IDUser.Equals(iduser) == true && a.IDMedal == 2).FirstOrDefault();
@@ -191,5 +183,79 @@ namespace API_Noface.Controllers
             }
             return Ok(new Message(0, ""));
         }
+
+        //danh hiệu
+        [Authorize]
+        [Route("Follower")]
+        [HttpPost]
+        public IHttpActionResult CreateFriend(Friends friend)//para 0, iduser, idfriend, 1
+        {
+            db.Friends.Add(friend);
+            db.SaveChanges();
+
+            return Ok(new Message(1, "follow thành công"));
+        }
+
+        [Authorize]
+        [Route("Accept")]
+        [HttpPost]
+        public IHttpActionResult Accept(Friends friend)//para 0, iduser, idfriend, 1
+        {
+
+            Friends friends = db.Friends.FirstOrDefault(f => f.IDUser.Equals(friend.IDFriends) == true && f.IDFriends.Equals(friend.IDUser) == true);
+
+            friends.Status = 3;
+
+            db.Friends.AddOrUpdate(friends);
+            db.SaveChanges();
+
+            return Ok(new Message(1, "kết bạn thành công"));
+        }
+
+        [Authorize]
+        [Route("DeleteFriend")]
+        [HttpPost]
+        public IHttpActionResult DeleteFriend(Friends friend)//para 0, iduser, idfriend, 1
+        {
+
+
+            Friends friendsAdd = db.Friends.FirstOrDefault(f => (f.IDUser.Equals(friend.IDUser) == true && f.IDFriends.Equals(friend.IDFriends) == true && f.Status == 3) || f.IDUser.Equals(friend.IDFriends) == true && f.IDFriends.Equals(friend.IDUser) == true && f.Status == 3);
+
+            db.Friends.Remove(friendsAdd);
+            db.SaveChanges();
+
+            return Ok(new Message(1, "xóa bạn thành công"));
+        }
+
+        [Authorize]
+        [Route("CheckFriends/{iduser}/{idfriend}")]
+        [HttpGet]
+        public IHttpActionResult CheckFriend(string iduser, string idfriend)
+        {
+            Friends friendsAdd = db.Friends.FirstOrDefault(f => (f.IDUser.Equals(iduser) == true && f.IDFriends.Equals(idfriend) == true && f.Status == 3) || f.IDUser.Equals(idfriend) == true && f.IDFriends.Equals(iduser) == true && f.Status == 3);
+
+            Friends friendsFollower = db.Friends.FirstOrDefault(f => f.IDUser.Equals(iduser) == true && f.IDFriends.Equals(idfriend) == true && f.Status == 1);
+
+            Friends friendsFollowee = db.Friends.FirstOrDefault(f => f.IDUser.Equals(idfriend) == true && f.IDFriends.Equals(iduser) == true && f.Status == 1);
+
+            if (friendsAdd != null)
+            {
+                return Ok(new Message(3, "Đã kết bạn"));
+            }
+
+            if (friendsFollower != null)
+            {
+                return Ok(new Message(1, "Theo dõi"));
+            }
+
+            if (friendsFollowee != null)
+            {
+                return Ok(new Message(2, "Được theo dõi"));
+            }
+
+            return Ok(new Message(0, "Người lạ"));
+        }
+
+
     }
 }
