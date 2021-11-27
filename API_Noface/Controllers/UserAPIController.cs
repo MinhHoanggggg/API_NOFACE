@@ -93,22 +93,10 @@ namespace API_Noface.Controllers
             return Ok(new Message(1, "Chúc mừng bạn đã xóa thành công"));
         }
 
-        //danh hiệu
-        [Authorize]
-        [Route("Achievements/{iduser}")]
-        [HttpGet]
-        public IHttpActionResult Achievement(string iduser)
-        {
-            var achie = db.Achievements.Where(a => a.IDUser.Equals(iduser) == true)
-                          .Include(a => a.Medals).ToList();
-
-            return Ok(achie);
-        }
-
 
         //post danh hiệu
         [Authorize]
-        [Route("Add-Achievements/{iduser}")]
+        [Route("Check-Achievements/{iduser}")]
         [HttpPost]
         public IHttpActionResult AddAchievement(string iduser)
         {
@@ -183,6 +171,18 @@ namespace API_Noface.Controllers
                 }
             }
             return Ok(new Message(0, ""));
+        }
+
+        //danh hiệu
+        [Authorize]
+        [Route("DanhHieu/{iduser}")]
+        [HttpGet]
+        public IHttpActionResult Achievement(string iduser)
+        {
+            var achie = db.Achievements.Where(a => a.IDUser.Equals(iduser) == true)
+                          .Include(a => a.Medals).ToList();
+
+            return Ok(achie);
         }
 
         //danh hiệu
