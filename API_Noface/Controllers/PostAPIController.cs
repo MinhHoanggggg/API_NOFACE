@@ -1,5 +1,6 @@
 ﻿using API_Noface.Models;
 using System;
+using System.Collections;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
@@ -9,6 +10,13 @@ namespace API_Noface.Controllers
 {
     public class PostAPIController : ApiController
     {
+
+        private readonly ArrayList loc = new ArrayList
+                {
+                    "gà",
+                    "non"
+                };
+
         private readonly NofaceDbContext db = new NofaceDbContext();
 
         //get all bài viết theo 1 chủ đề
@@ -61,6 +69,24 @@ namespace API_Noface.Controllers
                 if (!ModelState.IsValid)
                 {
                     return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, hãy thử lại!"));
+                }
+
+                //lọc
+                string tt = post.Title;
+                string ct = post.Content;
+
+                foreach (string item in loc)
+                {
+                    bool b1 = item.Contains(tt);
+                    bool b2 = item.Contains(ct);
+                    if (b1 == true || b2 == true)
+                    {
+                        User userDb = db.User.FirstOrDefault(u => u.IDUser.Equals(post.IDUser) == true);
+                        userDb.Warning++;
+                        db.User.AddOrUpdate(userDb);
+                        db.SaveChanges();
+                        return Ok(new Message(1, "Bài viết không phù hợp tiêu chuẩn, hãy chú ý ngôn từ nhé!"));
+                    }
                 }
 
                 db.Post.AddOrUpdate(post);
@@ -126,6 +152,29 @@ namespace API_Noface.Controllers
                 if (!ModelState.IsValid)
                 {
                     return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, hãy thử lại!"));
+                }
+
+                //kt post đã xóa chưa
+                Post post = db.Post.FirstOrDefault(p => p.IDPost == cmt.IDPost);
+                if(post == null)
+                {
+                    return Ok(new Message(1, "Không thể bình luận do bài viết đã bị xóa!"));
+                }
+
+                //lọc
+                string ct = cmt.Content;
+
+                foreach (string item in loc)
+                {
+                    bool b = item.Contains(ct);
+                    if (b == true)
+                    {
+                        User userDb = db.User.FirstOrDefault(u => u.IDUser.Equals(cmt.IDUser) == true);
+                        userDb.Warning++;
+                        db.User.AddOrUpdate(userDb);
+                        db.SaveChanges();
+                        return Ok(new Message(1, "Bình luận không hợp lệ, hãy chú ý ngôn từ nhé!"));
+                    }
                 }
 
                 db.Comment.AddOrUpdate(cmt);

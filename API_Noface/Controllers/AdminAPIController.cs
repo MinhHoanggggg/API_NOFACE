@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
@@ -111,5 +112,18 @@ namespace API_Noface.Controllers
             }
             return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, hãy thử lại!"));
         }
+
+        //unblock
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        [Route("get-all-cmt-user/{IDUser}")]
+        public IHttpActionResult GetAllCmtUser(string IDUser)
+        {
+            var cmts = db.Comment.Where(c => c.IDUser.Equals(IDUser) == true)
+                                 .Include(c => c.IDPost)
+                                 .ToList();
+            return Ok(cmts);
+        }
+
     }
 }
