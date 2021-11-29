@@ -14,7 +14,7 @@ namespace API_Noface.Controllers
         private readonly ArrayList loc = new ArrayList
                 {
                     "gà",
-                    "non"
+                    "non", "Tú"
                 };
 
         private readonly NofaceDbContext db = new NofaceDbContext();
@@ -159,6 +159,14 @@ namespace API_Noface.Controllers
                 if(post == null)
                 {
                     return Ok(new Message(1, "Không thể bình luận do bài viết đã bị xóa!"));
+                }
+
+                //kt user có bị ban ko?
+                User user = db.User.FirstOrDefault(u => u.IDUser.Equals(cmt.IDUser) == true);
+
+                if(user.Activated == 0)
+                {
+                    return Ok(new Message(1, "Bạn không thể bình luận do đang thuộc danh sách hạn chế!"));
                 }
 
                 //lọc
