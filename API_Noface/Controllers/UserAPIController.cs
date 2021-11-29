@@ -220,12 +220,30 @@ namespace API_Noface.Controllers
         {
 
 
-            Friends friendsAdd = db.Friends.FirstOrDefault(f => (f.IDUser.Equals(friend.IDUser) == true && f.IDFriends.Equals(friend.IDFriends) == true && f.Status == 3) || f.IDUser.Equals(friend.IDFriends) == true && f.IDFriends.Equals(friend.IDUser) == true && f.Status == 3);
+            Friends friendsAdd = db.Friends.FirstOrDefault(f => (f.IDUser.Equals(friend.IDUser) == true && f.IDFriends.Equals(friend.IDFriends) == true && f.Status == 3) || f.IDUser.Equals(friend.IDFriends) == true && f.IDFriends.Equals(friend.IDUser) == true && f.Status == 3 || f.IDUser.Equals(friend.IDFriends) && f.IDFriends.Equals(friend.IDUser) == true && f.Status == 1);
 
             db.Friends.Remove(friendsAdd);
             db.SaveChanges();
 
             return Ok(new Message(1, "xóa bạn thành công"));
+        }
+
+        [Authorize]
+        [Route("List-Follower")]
+        [HttpPost]
+        public IHttpActionResult ListFollower(string idUser)//para là my iduser
+        {
+            var friends = db.Friends.Where(f => f.IDFriends.Equals(idUser) && f.Status == 1).ToList();
+            return Ok(friends);
+        }
+
+        [Authorize]
+        [Route("List-Friend")]
+        [HttpPost]
+        public IHttpActionResult ListFriend(string idUser)//para là my iduser
+        {
+            var friends = db.Friends.Where(f => f.IDFriends.Equals(idUser) && f.Status == 3 || f.IDUser.Equals(idUser) && f.Status == 3).ToList();
+            return Ok(friends);
         }
 
         [Authorize]
