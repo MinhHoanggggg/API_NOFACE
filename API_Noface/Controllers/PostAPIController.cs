@@ -116,6 +116,18 @@ namespace API_Noface.Controllers
                         IDPost = idpost,
                         IDUser = iduser
                     };
+
+                    Post postdb = db.Post.FirstOrDefault(p => p.IDPost == idpost);
+                    //tạo notification
+                    Notification notification = new Notification
+                    {
+                        ID_Notification = 0,
+                        ID_User = postdb.IDUser,
+                        Data_Notification = "Bạn vừa có thêm 1 lượt thích",
+                        IDPost = idpost
+                    };
+
+                    db.Notification.Add(notification);
                     db.Likes.Add(like);
                 }
                 else
@@ -184,6 +196,18 @@ namespace API_Noface.Controllers
                         return Ok(new Message(1, "Bình luận không hợp lệ, hãy chú ý ngôn từ nhé!"));
                     }
                 }
+
+                //tạo notification
+                Post postdb = db.Post.FirstOrDefault(p => p.IDPost == cmt.IDPost);
+                Notification notification = new Notification
+                {
+                    ID_Notification = 0,
+                    ID_User = postdb.IDUser,
+                    Data_Notification = "Bạn vừa nhận được 1 bình luận",
+                    IDPost = cmt.IDPost
+                };
+
+                db.Notification.Add(notification);
 
                 db.Comment.AddOrUpdate(cmt);
                 db.SaveChanges();

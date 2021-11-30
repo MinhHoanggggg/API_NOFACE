@@ -93,7 +93,6 @@ namespace API_Noface.Controllers
             return Ok(new Message(1, "Chúc mừng bạn đã xóa thành công"));
         }
 
-
         //post danh hiệu
         [Authorize]
         [Route("Check-Achievements/{iduser}")]
@@ -180,7 +179,8 @@ namespace API_Noface.Controllers
         public IHttpActionResult Achievement(string iduser)
         {
             var achie = db.Achievements.Where(a => a.IDUser.Equals(iduser) == true)
-                          .Include(a => a.Medals).ToList();
+                          .Include(a => a.Medals)
+                          .ToList();
 
             return Ok(achie);
         }
@@ -275,6 +275,16 @@ namespace API_Noface.Controllers
             return Ok(new Message(0, "Người lạ"));
         }
 
+        //get danh sách thông báo
+        [Authorize]
+        [Route("notification/{idUser}")]
+        [HttpPost]
+        public IHttpActionResult Notification(string idUser)
+        {
+            var noti = db.Notification.Where(n => n.ID_User.Equals(idUser) == true).ToList();
+
+            return Ok(noti);
+        }
 
     }
 }

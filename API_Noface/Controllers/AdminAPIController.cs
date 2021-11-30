@@ -15,7 +15,7 @@ namespace API_Noface.Controllers
 {
     public class AdminAPIController : ApiController
     {
-        private NofaceDbContext db = new NofaceDbContext();
+        private readonly NofaceDbContext db = new NofaceDbContext();
 
         public string GenerateToken(string UserAdmin, string PassAdmin)
         {
@@ -113,17 +113,41 @@ namespace API_Noface.Controllers
             return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, hãy thử lại!"));
         }
 
-        //unblock
+        //notification
         [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("get-all-cmt-user/{IDUser}")]
         public IHttpActionResult GetAllCmtUser(string IDUser)
         {
             var cmts = db.Comment.Where(c => c.IDUser.Equals(IDUser) == true)
-                                 .Include(c => c.IDPost)
+                                 .Include(c => c.Post)
                                  .ToList();
             return Ok(cmts);
         }
 
+        //unblock
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [Route("add-notification")]
+        public IHttpActionResult AddNotification(Notification notification)
+        {
+            try
+            {
+                Notification notificationDb = new Notification
+                {
+                    ID_Notification = 0,
+                    ID_User = notification.ID_User,
+                    Data_Notification = notification.Data_Notification,
+                    IDPost = notification.IDPost
+                };
+                db.Notification.Add(notificationDb);
+                db.SaveChanges();
+                return Ok(new Message(1, "Đã thêm thông báo thành công!"));
+            }
+            catch
+            {
+                return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, hãy thử lại!"));
+            }
+        }
     }
 }

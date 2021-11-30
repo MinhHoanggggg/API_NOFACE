@@ -16,7 +16,7 @@ namespace API_Noface.Models
         [StringLength(50)]
         public string IDFriends { get; set; }
 
-        public int Status { get; set; }
+        public int? Status { get; set; }
 
         public virtual User User { get; set; }
 

@@ -19,6 +19,7 @@ namespace API_Noface.Models
             Friends1 = new HashSet<Friends>();
             LikeComment = new HashSet<LikeComment>();
             Likes = new HashSet<Likes>();
+            Notification = new HashSet<Notification>();
             Post = new HashSet<Post>();
         }
 
@@ -31,6 +32,8 @@ namespace API_Noface.Models
         public int? IDAvt { get; set; }
 
         public string RefeshToken { get; set; }
+
+        public string TokenFirebase { get; set; }
 
         public int? Warning { get; set; }
 
@@ -58,6 +61,9 @@ namespace API_Noface.Models
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Likes> Likes { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Notification> Notification { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Post> Post { get; set; }

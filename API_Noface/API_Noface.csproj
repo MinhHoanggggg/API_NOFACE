@@ -215,6 +215,7 @@
     <Compile Include="Models\Medals.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\NofaceDbContext.cs" />
+    <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\Post.cs" />
     <Compile Include="Models\Token.cs" />
     <Compile Include="Models\Topic.cs" />

@@ -22,10 +22,10 @@ namespace API_Noface.Models
         public virtual DbSet<LikeComment> LikeComment { get; set; }
         public virtual DbSet<Likes> Likes { get; set; }
         public virtual DbSet<Medals> Medals { get; set; }
+        public virtual DbSet<Notification> Notification { get; set; }
         public virtual DbSet<Post> Post { get; set; }
         public virtual DbSet<Topic> Topic { get; set; }
         public virtual DbSet<User> User { get; set; }
-        public virtual DbSet<Message> Message { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -63,6 +63,10 @@ namespace API_Noface.Models
 
             modelBuilder.Entity<Medals>()
                 .Property(e => e.ImgMedal)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Notification>()
+                .Property(e => e.ID_User)
                 .IsFixedLength();
 
             modelBuilder.Entity<Post>()
@@ -115,6 +119,11 @@ namespace API_Noface.Models
                 .HasMany(e => e.Likes)
                 .WithRequired(e => e.User)
                 .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<User>()
+                .HasMany(e => e.Notification)
+                .WithOptional(e => e.User)
+                .HasForeignKey(e => e.ID_User);
         }
     }
 }
