@@ -15,12 +15,23 @@ namespace API_Noface.Models
         [StringLength(50)]
         public string ID_User { get; set; }
 
+        [StringLength(50)]
+        public string Title_Notification { get; set; }
+
+        [StringLength(50)]
         public string Data_Notification { get; set; }
 
         public int? IDPost { get; set; }
 
+        [StringLength(50)]
+        public string ID_User_Seen_noti { get; set; }
+
+        public int Status_Notification { get; set; }
+
         public virtual Post Post { get; set; }
 
         public virtual User User { get; set; }
+
+        public virtual User User1 { get; set; }
     }
 }

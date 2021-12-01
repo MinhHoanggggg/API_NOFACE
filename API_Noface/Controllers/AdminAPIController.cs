@@ -64,7 +64,7 @@ namespace API_Noface.Controllers
         [Route("get-all-user")]
         public IHttpActionResult GetAllUser()
         {
-            var LstUser = db.User.ToList();
+            var LstUser = db.User.Include(u => u.Ban).ToList();
             return Ok(LstUser);
         }
 
@@ -138,7 +138,9 @@ namespace API_Noface.Controllers
                     ID_Notification = 0,
                     ID_User = notification.ID_User,
                     Data_Notification = notification.Data_Notification,
-                    IDPost = notification.IDPost
+                    IDPost = notification.IDPost,
+                    ID_User_Seen_noti = "Admin",
+                    Status_Notification = 0
                 };
                 db.Notification.Add(notificationDb);
                 db.SaveChanges();
@@ -148,6 +150,16 @@ namespace API_Noface.Controllers
             {
                 return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, hãy thử lại!"));
             }
+        }
+
+        //get ban
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        [Route("get-ban-user")]
+        public IHttpActionResult GetBanUser()
+        {
+            var LstUser = db.Ban.ToList();
+            return Ok(LstUser);
         }
     }
 }

@@ -124,7 +124,9 @@ namespace API_Noface.Controllers
                         ID_Notification = 0,
                         ID_User = postdb.IDUser,
                         Data_Notification = "Bạn vừa có thêm 1 lượt thích",
-                        IDPost = idpost
+                        IDPost = idpost,
+                        ID_User_Seen_noti = iduser,
+                        Status_Notification = 0
                     };
 
                     db.Notification.Add(notification);
@@ -204,7 +206,9 @@ namespace API_Noface.Controllers
                     ID_Notification = 0,
                     ID_User = postdb.IDUser,
                     Data_Notification = "Bạn vừa nhận được 1 bình luận",
-                    IDPost = cmt.IDPost
+                    IDPost = cmt.IDPost,
+                    ID_User_Seen_noti = cmt.IDUser,
+                    Status_Notification = 0
                 };
 
                 db.Notification.Add(notification);
