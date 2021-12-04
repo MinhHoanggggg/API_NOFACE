@@ -33,8 +33,6 @@ namespace API_Noface.Models
 
         public string RefeshToken { get; set; }
 
-        public string TokenFirebase { get; set; }
-
         public int? Warning { get; set; }
 
         public int? Activated { get; set; }
