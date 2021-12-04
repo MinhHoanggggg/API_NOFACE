@@ -13,7 +13,7 @@ namespace API_Noface.Controllers
     [Route("/api/")]
     public class UserAPIController : ApiController
     {
-        private NofaceDbContext db = new NofaceDbContext();
+        private readonly NofaceDbContext db = new NofaceDbContext();
 
         //get 1 user theo id
         [Authorize]
@@ -219,8 +219,7 @@ namespace API_Noface.Controllers
         public IHttpActionResult DeleteFriend(Friends friend)//para 0, iduser, idfriend, 1
         {
 
-
-            Friends friendsAdd = db.Friends.FirstOrDefault(f => (f.IDUser.Equals(friend.IDUser) == true && f.IDFriends.Equals(friend.IDFriends) == true && f.Status == 3) || f.IDUser.Equals(friend.IDFriends) == true && f.IDFriends.Equals(friend.IDUser) == true && f.Status == 3 || f.IDUser.Equals(friend.IDFriends) && f.IDFriends.Equals(friend.IDUser) == true && f.Status == 1);
+            Friends friendsAdd = db.Friends.FirstOrDefault(f => (f.IDUser.Equals(friend.IDUser) == true && f.IDFriends.Equals(friend.IDFriends) == true && f.Status == 3) || f.IDUser.Equals(friend.IDFriends) == true && f.IDFriends.Equals(friend.IDUser) == true && f.Status == 3 || f.IDUser.Equals(friend.IDUser) && f.IDFriends.Equals(friend.IDFriends) == true && f.Status == 1);
 
             db.Friends.Remove(friendsAdd);
             db.SaveChanges();
@@ -286,5 +285,35 @@ namespace API_Noface.Controllers
             return Ok(noti);
         }
 
+        [Authorize]
+        [HttpPost]
+        [Route("view-noti/{idNoti}")]
+        public IHttpActionResult ViewNoti(int idNoti)//para là id noti
+        {
+            try
+            {
+                var noti = db.Notification.FirstOrDefault(n => n.ID_Notification == idNoti);
+
+                if (noti == null)
+                {
+                    return Ok(new Message(0, "Lỗi"));
+                }
+
+                if(noti.Status_Notification == 0)
+                {
+                    noti.Status_Notification = 1;
+                }
+
+                db.Notification.AddOrUpdate(noti);
+                db.SaveChanges();
+                return Ok(new Message(1, "ok thành công, đừng show lên"));
+            }
+            catch (Exception)
+            {
+                return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, hãy thử lại!"));
+            }
+        }
     }
+
 }
+

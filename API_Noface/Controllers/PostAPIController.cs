@@ -306,6 +306,7 @@ namespace API_Noface.Controllers
             var posts = db.Post.OrderByDescending(p => p.Time)
                                .Include(p => p.Likes)
                                .Include(p => p.Comment)
+                               .Include(p => p.Topic)
                                .ToList();
 
             if (posts == null)
@@ -371,6 +372,32 @@ namespace API_Noface.Controllers
                 db.Comment.Remove(cmt);
                 db.SaveChanges();
                 return Ok(new Message(1, "Xóa bình luận thành công!"));
+            }
+            catch (Exception)
+            {
+                return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, hãy thử lại!"));
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("view-post/{idpost}")]
+        public IHttpActionResult ViewPost(int idpost)//para là id post
+        {
+            try
+            {
+                var post = db.Post.FirstOrDefault(p => p.IDPost == idpost);
+
+                if (post == null)
+                {
+                    return Ok(new Message(0, "Bài viết này đã bị xóa"));
+                }
+
+                post.Views++;
+
+                db.Post.AddOrUpdate(post);
+                db.SaveChanges();
+                return Ok(new Message(1, "ok thành công, đừng show lên"));
             }
             catch (Exception)
             {

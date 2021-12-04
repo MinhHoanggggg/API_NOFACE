@@ -20,7 +20,6 @@ namespace API_Noface.Models
             LikeComment = new HashSet<LikeComment>();
             Likes = new HashSet<Likes>();
             Notification = new HashSet<Notification>();
-            Notification1 = new HashSet<Notification>();
             Post = new HashSet<Post>();
         }
 
@@ -65,9 +64,6 @@ namespace API_Noface.Models
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Notification> Notification { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Notification> Notification1 { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Post> Post { get; set; }

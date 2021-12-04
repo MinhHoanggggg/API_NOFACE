@@ -16,9 +16,6 @@ namespace API_Noface.Models
         public string ID_User { get; set; }
 
         [StringLength(50)]
-        public string Title_Notification { get; set; }
-
-        [StringLength(50)]
         public string Data_Notification { get; set; }
 
         public int? IDPost { get; set; }
@@ -31,7 +28,5 @@ namespace API_Noface.Models
         public virtual Post Post { get; set; }
 
         public virtual User User { get; set; }
-
-        public virtual User User1 { get; set; }
     }
 }

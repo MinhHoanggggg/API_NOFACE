@@ -26,7 +26,6 @@ namespace API_Noface.Models
         public virtual DbSet<Post> Post { get; set; }
         public virtual DbSet<Topic> Topic { get; set; }
         public virtual DbSet<User> User { get; set; }
-        public virtual DbSet<Message> Message { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -129,11 +128,6 @@ namespace API_Noface.Models
                 .HasMany(e => e.Notification)
                 .WithOptional(e => e.User)
                 .HasForeignKey(e => e.ID_User);
-
-            modelBuilder.Entity<User>()
-                .HasMany(e => e.Notification1)
-                .WithOptional(e => e.User1)
-                .HasForeignKey(e => e.ID_User_Seen_noti);
         }
     }
 }

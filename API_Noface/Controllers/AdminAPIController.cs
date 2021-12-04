@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Migrations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
@@ -75,9 +76,14 @@ namespace API_Noface.Controllers
         public IHttpActionResult BlockUser(string IDUser)
         {
             User user = db.User.FirstOrDefault(u => u.IDUser.Equals(IDUser) == true);
+            Ban userBan = db.Ban.FirstOrDefault(u => u.IDUser.Equals(IDUser) == true);
 
-            if(user != null)
+            if (user != null && userBan == null)
             {
+
+                user.Warning = 0;
+                user.Activated = 0;
+
                 Ban ban = new Ban
                 {
                     IDBan = 0,
@@ -85,11 +91,24 @@ namespace API_Noface.Controllers
                     TimeBan = DateTime.Now.AddDays(10)
                 };
 
-                db.Ban.Add(ban);
-                user.Warning = 0;
-                user.Activated = 0;
+                //DateTime time = DateTime.Now.AddDays(10);
+                //tạo notification
+                Notification notification = new Notification
+                {
+                    ID_Notification = 0,
+                    ID_User = IDUser,
+                    IDPost = null,
+                    Data_Notification = "Tài khoản của bạn đã được mở khóa!",
+                    ID_User_Seen_noti = "Admin",
+                    Status_Notification = 0
+                };
+
+                db.Notification.Add(notification);
                 db.SaveChanges();
-                return Ok(new Message(1, "Đã ban tài khoản thành công!"));
+                db.Ban.Add(ban);
+                db.SaveChanges();
+
+                return Ok(new Message(1, "Đã khóa tài khoản thành công!"));
             }
             return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, hãy thử lại!"));
         }
@@ -103,10 +122,23 @@ namespace API_Noface.Controllers
             User user = db.User.FirstOrDefault(u => u.IDUser.Equals(IDUser) == true);
             var userBan = db.Ban.FirstOrDefault(u => u.IDUser.Equals(IDUser) == true);
 
-            if (user != null && userBan != null && userBan.TimeBan < DateTime.Now)
+            if (user != null && userBan != null)
             {
-                db.Ban.Add(userBan);
+                db.Ban.Remove(userBan);
                 user.Activated = 1;
+
+                //tạo notification
+                Notification notification = new Notification
+                {
+                    ID_Notification = 0,
+                    ID_User = IDUser,
+                    IDPost = null,
+                    Data_Notification = "Tài khoản của bạn đã được mở khóa!",
+                    ID_User_Seen_noti = "Admin",
+                    Status_Notification = 0
+                };
+
+                db.Notification.Add(notification);
                 db.SaveChanges();
                 return Ok(new Message(1, "Đã mở khóa tài khoản thành công!"));
             }

@@ -1,6 +1,7 @@
 ﻿using API_Noface.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -38,7 +39,7 @@ namespace API_Noface.Controllers
                     return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, chủ đề đã tồn tại!"));
                 }
 
-                db.Topic.Add(topic);
+                db.Topic.AddOrUpdate(topic);
                 db.SaveChanges();
             }
             catch (Exception)
