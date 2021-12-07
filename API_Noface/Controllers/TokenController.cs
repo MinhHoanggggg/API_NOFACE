@@ -137,7 +137,7 @@ namespace API_Noface.Controllers
 
             if (userdb != null)
             {
-                userdb.RefeshToken = refeshToken;
+                userdb.RefreshToken = refeshToken;
                 db.SaveChanges();
             }
         }
@@ -147,7 +147,7 @@ namespace API_Noface.Controllers
             var user = db.User.FirstOrDefault(u => u.IDUser.Equals(idUser) == true);
             if (user != null)
             {
-                return user.RefeshToken;
+                return user.RefreshToken;
             }
             return null;
         }

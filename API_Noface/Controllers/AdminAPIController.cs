@@ -1,6 +1,7 @@
 ﻿using API_Noface.Models;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
@@ -192,6 +193,93 @@ namespace API_Noface.Controllers
         {
             var LstUser = db.Ban.ToList();
             return Ok(LstUser);
+        }
+
+        //thống kê 2
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        [Route("get-statistics")]
+        public IHttpActionResult GetStatistics()
+        {
+            var posts = db.Post.ToList();
+            var users = db.User.ToList();
+            int i = 1;
+            int sumPost = 0;
+            int sumUser = 0;
+            int[] LstPost = new int[12];
+            int[] LstUser = new int[12];
+
+            while (i <= 12)
+            {
+                foreach(var item in posts)
+                {
+                    DateTime dt = (DateTime)item.Time;
+                    if(dt.Month == i)
+                    {
+                        sumPost++;
+                    }
+                }
+                LstPost[i-1] += sumPost;
+                sumPost = 0;
+                i++;
+            }
+
+            //User
+            i = 1;
+            while (i <= 12)
+            {
+                foreach (var item in users)
+                {
+                    DateTime dt = (DateTime)item.TimeRegister;
+                    if (dt.Month == i)
+                    {
+                        sumUser++;
+                    }
+                }
+                LstUser[i - 1] += sumUser;
+                sumUser = 0;
+                i++;
+            }
+
+
+            return Ok(new Statistics(LstPost, LstUser));
+        }
+
+        //thống kê 1
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        [Route("get-SumStatistics")]
+        public IHttpActionResult GetSumStatistics()
+        {
+            var posts = db.Post.ToList();
+            var users = db.User.ToList();
+            int PostsMonth = 0;
+            int UserMonth = 0;
+
+            foreach (var item in posts)
+            {
+                int now = DateTime.Now.Month;
+                DateTime dt = (DateTime)item.Time;
+                if (dt.Month == now)
+                {
+                    PostsMonth++;
+                }
+            }
+
+            foreach (var item in users)
+            {
+                int now = DateTime.Now.Month;
+                DateTime dt = (DateTime)item.TimeRegister;
+                if (dt.Month == now)
+                {
+                    UserMonth++;
+                }
+            }
+
+            int SumPosts = db.Post.Count();
+            int SumUsers = db.User.Count();
+
+            return Ok(new SumStatistics(SumPosts, SumUsers, UserMonth, PostsMonth));
         }
     }
 }

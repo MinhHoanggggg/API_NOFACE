@@ -217,6 +217,8 @@
     <Compile Include="Models\NofaceDbContext.cs" />
     <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\Post.cs" />
+    <Compile Include="Models\Statistics.cs" />
+    <Compile Include="Models\SumStatistics.cs" />
     <Compile Include="Models\Token.cs" />
     <Compile Include="Models\Topic.cs" />
     <Compile Include="Models\User.cs" />

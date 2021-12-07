@@ -100,7 +100,9 @@ namespace API_Noface.Controllers
         public IHttpActionResult AddAchievement(string iduser)
         {
 
-            User user = db.User.FirstOrDefault(u => u.IDUser.Equals(iduser) == true);
+            User user = db.User.Where(u => u.IDUser.Equals(iduser) == true)
+                            .Include(u => u.Likes)
+                            .Include(u => u.Comment).FirstOrDefault();
 
             if (user.Comment.Count > 9)
             {
