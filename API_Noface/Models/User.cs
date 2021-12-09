@@ -29,7 +29,7 @@ namespace API_Noface.Models
 
         public string Name { get; set; }
 
-        public int? IDAvt { get; set; }
+        public string Avt { get; set; }
 
         public string RefreshToken { get; set; }
 
@@ -41,8 +41,6 @@ namespace API_Noface.Models
         public DateTime? TimeRegister { get; set; }
 
         public virtual ICollection<Achievements> Achievements { get; set; }
-
-        public virtual Avt Avt { get; set; }
 
         public virtual ICollection<Ban> Ban { get; set; }
 

@@ -315,6 +315,27 @@ namespace API_Noface.Controllers
                 return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, hãy thử lại!"));
             }
         }
+
+        [Authorize]
+        [HttpPost]
+        [Route("Avata/{idUser}/{Ava}")]
+        public IHttpActionResult Avata(string idUser, string Ava)
+        {
+            try
+            {
+                var Userdb = db.User.FirstOrDefault(n => n.IDUser == idUser);
+
+                Userdb.Avt = Ava;
+
+                db.User.AddOrUpdate(Userdb);
+                db.SaveChanges();
+                return Ok(new Message(1, "ok thành công"));
+            }
+            catch (Exception)
+            {
+                return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, hãy thử lại!"));
+            }
+        }
     }
 
 }
