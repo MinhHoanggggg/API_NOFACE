@@ -29,7 +29,6 @@ namespace API_Noface.Controllers
                                             .OrderByDescending(p => p.Time)
                                             .Include(p => p.Likes)
                                             .Include(p => p.Comment)
-                                            .Include(p => p.Topic)
                                             .ToList();
 
             if (posts == null)
@@ -306,7 +305,6 @@ namespace API_Noface.Controllers
             var posts = db.Post.OrderByDescending(p => p.Time)
                                .Include(p => p.Likes)
                                .Include(p => p.Comment)
-                               .Include(p => p.Topic)
                                .ToList();
 
             if (posts == null)
