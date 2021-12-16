@@ -318,23 +318,26 @@ namespace API_Noface.Controllers
 
         [Authorize]
         [HttpPost]
-        [Route("Avata")]
-        public IHttpActionResult Avata(Avt avt)
+        [Route("Avatar")]
+        public IHttpActionResult Avatar(Avt avt)
         {
             try
             {
                 var Userdb = db.User.FirstOrDefault(n => n.IDUser.Equals(avt.IDUser) == true);
-
-                Userdb.Avt = avt.URL;
-
-                db.User.AddOrUpdate(Userdb);
-                db.SaveChanges();
-                return Ok(new Message(1, "ok thành công"));
+                if(Userdb != null)
+                {
+                    Userdb.Avt = avt.URL;
+                    Userdb.Name = avt.NameUser;
+                    db.User.AddOrUpdate(Userdb);
+                    db.SaveChanges();
+                    return Ok(new Message(1, "ok thành công"));
+                }
             }
             catch (Exception)
             {
                 return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, hãy thử lại!"));
             }
+            return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, hãy thử lại!"));
         }
     }
 

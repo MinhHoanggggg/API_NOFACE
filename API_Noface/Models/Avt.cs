@@ -9,5 +9,7 @@ namespace API_Noface.Models
     {
         public string IDUser { get; set; }
         public string URL { get; set; }
+        public string NameUser { get; set; }
+
     }
 }
