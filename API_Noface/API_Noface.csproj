@@ -206,6 +206,7 @@
     </Compile>
     <Compile Include="Models\Achievements.cs" />
     <Compile Include="Models\Admin.cs" />
+    <Compile Include="Models\Avt.cs" />
     <Compile Include="Models\Ban.cs" />
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\Friends.cs" />

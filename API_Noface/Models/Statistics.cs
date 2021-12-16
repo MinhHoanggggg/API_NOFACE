@@ -13,7 +13,7 @@ namespace API_Noface.Models
             Users = users;
         }
 
-        public int[] Posts { get; }
-        public int[] Users { get; }
+        public int[] Posts { get; set; }
+        public int[] Users { get; set; }
     }
 }

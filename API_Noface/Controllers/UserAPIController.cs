@@ -318,14 +318,14 @@ namespace API_Noface.Controllers
 
         [Authorize]
         [HttpPost]
-        [Route("Avata/{idUser}/{Ava}")]
-        public IHttpActionResult Avata(string idUser, string Ava)
+        [Route("Avata")]
+        public IHttpActionResult Avata(Avt avt)
         {
             try
             {
-                var Userdb = db.User.FirstOrDefault(n => n.IDUser == idUser);
+                var Userdb = db.User.FirstOrDefault(n => n.IDUser.Equals(avt.IDUser) == true);
 
-                Userdb.Avt = Ava;
+                Userdb.Avt = avt.URL;
 
                 db.User.AddOrUpdate(Userdb);
                 db.SaveChanges();
