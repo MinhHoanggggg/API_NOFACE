@@ -33,13 +33,15 @@ namespace API_Noface.Controllers
                     return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, thêm chủ đề không thành công!"));
                 }
 
+                var Topic = db.Topic.FirstOrDefault(t => t.TopicName.Equals(topic.TopicName) == true);
+
                 //kiểm tra db
-                if (db.Topic.FirstOrDefault(t => t.TopicName.Equals(topic.TopicName)) != null)
+                if (Topic != null)
                 {
                     return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, chủ đề đã tồn tại!"));
                 }
 
-                db.Topic.AddOrUpdate(topic);
+                db.Topic.Add(topic);
                 db.SaveChanges();
             }
             catch (Exception)
@@ -47,6 +49,34 @@ namespace API_Noface.Controllers
                 return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương, thêm chủ đề không thành công!"));
             }
             return Ok(new Message(1, "Thêm chủ đề thành công rồi đại vương ơi!"));
+        }
+
+        [Authorize]
+        [Route("update-topic")]
+        [HttpPost]
+        public IHttpActionResult UpdateTopic(Topic topic)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương"));
+                }
+
+                var Topic = db.Topic.FirstOrDefault(t => t.IDTopic == topic.IDTopic);
+
+                if (Topic != null)
+                {
+                    db.Topic.AddOrUpdate(topic);
+                    db.SaveChanges();
+                    return Ok(new Message(1, "Cập nhật chủ đề thành công!"));
+                }
+            }
+            catch (Exception)
+            {
+                return Ok(new Message(0, "Có lỗi xảy ra rồi đại vương"));
+            }
+            return Ok(new Message(0, "Không có chủ đề mà đòi cập nhật!"));
         }
 
         //only admin
