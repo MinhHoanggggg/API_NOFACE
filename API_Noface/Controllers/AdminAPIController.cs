@@ -99,7 +99,7 @@ namespace API_Noface.Controllers
                     ID_Notification = 0,
                     ID_User = IDUser,
                     IDPost = null,
-                    Data_Notification = "Tài khoản của bạn đã được mở khóa!",
+                    Data_Notification = "Tài khoản của bạn đã bị hạn chế!",
                     ID_User_Seen_noti = "Admin",
                     Status_Notification = 0
                 };

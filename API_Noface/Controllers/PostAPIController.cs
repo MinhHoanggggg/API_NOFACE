@@ -270,21 +270,39 @@ namespace API_Noface.Controllers
 
                 var likes = db.Likes.Where(l => l.IDPost == id).ToList();
 
-                foreach (Likes like in likes)
+                if(likes != null)
                 {
-                    db.Likes.Remove(like);
+                    foreach (Likes like in likes)
+                    {
+                        db.Likes.Remove(like);
+                    }
                 }
 
                 var cmts = db.Comment.Where(c => c.IDPost == id).ToList();
 
-                foreach (Comment cmt in cmts)
+                if(cmts != null)
                 {
-                    var likecmt = db.LikeComment.Where(l => l.IDCmt == cmt.IDCmt).ToList();
-                    foreach (LikeComment like in likecmt)
+                    foreach (Comment cmt in cmts)
                     {
-                        db.LikeComment.Remove(like);
+                        var likecmt = db.LikeComment.Where(l => l.IDCmt == cmt.IDCmt).ToList();
+                        if(likecmt != null)
+                        {
+                            foreach (LikeComment like in likecmt)
+                            {
+                                db.LikeComment.Remove(like);
+                            }
+                        }
+                        db.Comment.Remove(cmt);
                     }
-                    db.Comment.Remove(cmt);
+                }
+
+                var notiDb = db.Notification.Where(c => c.IDPost == id).ToList();
+                if (notiDb != null)
+                {
+                    foreach (Notification noti in notiDb)
+                    {
+                        db.Notification.Remove(noti);
+                    }
                 }
 
                 db.Post.Remove(posts);
